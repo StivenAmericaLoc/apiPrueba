@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.api.ubika.account.entity.AccountToken;
+import com.api.ubika.account.repository.IAccountTokenRepository;
+import com.api.ubika.account.util.TokenUtil;
 import com.api.ubika.form.DetailInstallationForm;
 import com.api.ubika.form.InstallationForm;
 import com.api.ubika.installation.entity.DetailInstallation;
@@ -29,20 +32,29 @@ public class InstallationService implements IInstallationService {
 	
 	@Autowired
 	private IDetailInstallationRepository detailInstallationRepository;
+	
+	@Autowired
+	private IAccountTokenRepository tokenRepository;
 
 	@Override
 	public ResponseEntity<Object> save(String token, InstallationForm form) {
 		try {
-			if (token != null) {
+			if (validarToken(token)) {
 				Installation installation = castFormEntity(form);
+				int contador = (int) installationRepository.count();
+				installation.setId(contador+1);
 				installation = installationRepository.save(installation);
 				List<DetailInstallation> details = castListFormEntity(form);
-				for(DetailInstallation detail : details) {
+				for(DetailInstallation detail : details) {					
 					detail.setIdInstallation(installation.getId());
 					detail.setDateInit(installation.getDateInstallation());
+					int contadorDetail =  (int) detailInstallationRepository.count();
+					detail.setId(contadorDetail+1);
 					detail = detailInstallationRepository.save(detail);
 				}
-				return new ResponseEntity<Object>(installation, HttpStatus.OK);
+				form = castEntityForm(installation);
+				form.setDetails(castDetailEntityForm(details));
+				return new ResponseEntity<Object>(form, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Object>(TOKEN_INVALID, HttpStatus.FORBIDDEN);
 			}
@@ -54,7 +66,7 @@ public class InstallationService implements IInstallationService {
 	@Override
 	public ResponseEntity<Object> delete(String token, Integer id) {
 		try {
-			if (token != null) {
+			if (validarToken(token)) {
 				List<DetailInstallation> details = detailInstallationRepository.findByIdInstallationAll(id);
 				Installation installation = installationRepository.findById(id).get();
 				for(DetailInstallation detail : details) {
@@ -73,9 +85,12 @@ public class InstallationService implements IInstallationService {
 	@Override
 	public ResponseEntity<Object> findById(String token, Integer id) {
 		try {
-			if (token != null) {
+			if (validarToken(token)) {
 				Installation installation = installationRepository.findById(id).get();
-				return new ResponseEntity<Object>(installation, HttpStatus.OK);
+				List<DetailInstallation> details = detailInstallationRepository.findByIdInstallationAll(id);
+				InstallationForm form = castEntityForm(installation);
+				form.setDetails(castDetailEntityForm(details));
+				return new ResponseEntity<Object>(form, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Object>(TOKEN_INVALID, HttpStatus.FORBIDDEN);
 			}
@@ -87,10 +102,19 @@ public class InstallationService implements IInstallationService {
 	@Override
 	public ResponseEntity<Object> findAll(String token) {
 		try {
-			if (token != null) {
+			if (validarToken(token)) {
 				List<Installation> installations = new ArrayList<Installation>();
 				installationRepository.findAll().forEach(installations::add);
-				return new ResponseEntity<Object>(installations, HttpStatus.OK);
+				List<InstallationForm> forms = new ArrayList<InstallationForm>();
+				if (installations.size() > 0) {
+					for(Installation install : installations) {
+						InstallationForm form = castEntityForm(install);
+						List<DetailInstallation> details = detailInstallationRepository.findByIdInstallationAll(form.getId());
+						form.setDetails(castDetailEntityForm(details));
+						forms.add(form);
+					}
+				}			
+				return new ResponseEntity<Object>(forms, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Object>(TOKEN_INVALID, HttpStatus.FORBIDDEN);
 			}
@@ -129,6 +153,47 @@ public class InstallationService implements IInstallationService {
 			details.add(entity);
 		}
 		return details;
+	}
+	
+	private InstallationForm castEntityForm(Installation installation) {
+		InstallationForm form = new InstallationForm();
+		form.setId(installation.getId());
+		form.setIdAccount(installation.getIdAccount());
+		form.setAddress(installation.getAddress());
+		form.setDescription(installation.getDescription());
+		form.setDateInstallation(installation.getDateInstallation());
+		form.setDateFinish(installation.getDateFinish());
+		return form;
+	}
+	
+	private List<DetailInstallationForm> castDetailEntityForm(List<DetailInstallation> details) {
+		List<DetailInstallationForm> listForm =  new ArrayList<DetailInstallationForm>();
+		for(DetailInstallation detail : details) {
+			DetailInstallationForm form = new DetailInstallationForm();
+			form.setId(detail.getId());
+			form.setIdDevice(detail.getIdDevice());
+			form.setIdInstallation(detail.getIdInstallation());
+			form.setTaskCoordenate(detail.getTaskCoordenate());
+			form.setTaskAccuary(detail.getTaskAccuary());
+			form.setTaskOff(detail.getTaskOff());
+			form.setTaskOffRemote(detail.getTaskOffRemote());
+			form.setTaskOn(detail.getTaskOn());
+			form.setTaskPanicBoton(detail.getTaskPanicBoton());
+			form.setDateInit(detail.getDateInit());
+			form.setDateFinish(detail.getDateFinish());
+			listForm.add(form);
+		}
+		return listForm;
+	}
+	
+	private boolean validarToken(String token) {
+		try {
+			TokenUtil util = new TokenUtil();
+			AccountToken info = tokenRepository.findByToken(token);
+			return util.validarFecha(info.getDateExpired());
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

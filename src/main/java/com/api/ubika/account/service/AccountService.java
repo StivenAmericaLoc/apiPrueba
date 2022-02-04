@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.api.ubika.account.entity.Account;
+import com.api.ubika.account.entity.AccountToken;
 import com.api.ubika.account.repository.IAccountRepository;
+import com.api.ubika.account.repository.IAccountTokenRepository;
+import com.api.ubika.account.util.TokenUtil;
 import com.api.ubika.form.AccountForm;
 import com.api.ubika.form.LoginForm;
 
@@ -19,20 +22,35 @@ public class AccountService implements IAccountService {
 	private static final String ACCOUNT_NOT_FOUND = "Account not found";
 	private static final String USER_INVALID = "User not found";
 	private static final String PASS_INVALID = "Password not found";
+	private static final String CHECK_TOKEN = "Check token";
 	
 	@Autowired
 	private IAccountRepository accountRepository;
+	
+	@Autowired
+	private IAccountTokenRepository tokenRepository;
 
 	@Override
 	public ResponseEntity<Object> save(String token, AccountForm form) {
-		Account account = castFormEntity(form);
-		if (account.getId() == null) {
-			int cantidad = (int) accountRepository.count();
-			account.setId(cantidad+1);
-		}
 		try {
-			account = accountRepository.save(account);			
-			return new ResponseEntity<Object>(account, HttpStatus.OK);
+			if (validarToken(token)) {
+				Account account = castFormEntity(form);
+				if (account.getId() == null) {
+					int cantidad = (int) accountRepository.count();
+					account.setId(cantidad+1);
+				}
+				account = accountRepository.save(account);
+				AccountToken accToken = new AccountToken();
+				TokenUtil utilToken = new TokenUtil();
+				accToken.setIdAccount(account.getId());
+				accToken.setToken(utilToken.generarToken());
+				accToken.setDateExpired(utilToken.generarFecha());
+				tokenRepository.save(accToken);
+				return new ResponseEntity<Object>(account, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Object>(CHECK_TOKEN, HttpStatus.FORBIDDEN);
+			}
+			
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}		
@@ -41,13 +59,17 @@ public class AccountService implements IAccountService {
 	@Override
 	public ResponseEntity<Object> delete(String token, Integer id) {
 		try {
-			Account account = accountRepository.findById(id).get();
-			if (account == null) {
-				return new ResponseEntity<Object>(ACCOUNT_NOT_FOUND, HttpStatus.BAD_REQUEST);
+			if (validarToken(token)) {
+				Account account = accountRepository.findById(id).get();
+				if (account == null) {
+					return new ResponseEntity<Object>(ACCOUNT_NOT_FOUND, HttpStatus.BAD_REQUEST);
+				} else {
+					accountRepository.delete(account);
+					return new ResponseEntity<Object>(account, HttpStatus.OK);
+				}
 			} else {
-				accountRepository.delete(account);
-				return new ResponseEntity<Object>(account, HttpStatus.OK);
-			}				
+				return new ResponseEntity<Object>(CHECK_TOKEN, HttpStatus.FORBIDDEN);
+			}		
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -56,11 +78,15 @@ public class AccountService implements IAccountService {
 	@Override
 	public ResponseEntity<Object> findById(String token, Integer id) {
 		try {
-			Account account = accountRepository.findById(id).get();
-			if (account == null) {
-				return new ResponseEntity<Object>(ACCOUNT_NOT_FOUND, HttpStatus.BAD_REQUEST);
+			if (validarToken(token)) {
+				Account account = accountRepository.findById(id).get();
+				if (account == null) {
+					return new ResponseEntity<Object>(ACCOUNT_NOT_FOUND, HttpStatus.BAD_REQUEST);
+				} else {
+					return new ResponseEntity<Object>(account, HttpStatus.OK);
+				}
 			} else {
-				return new ResponseEntity<Object>(account, HttpStatus.OK);
+				return new ResponseEntity<Object>(CHECK_TOKEN, HttpStatus.FORBIDDEN);
 			}				
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,9 +96,13 @@ public class AccountService implements IAccountService {
 	@Override
 	public ResponseEntity<Object> findAll(String token) {
 		try {
-			List<Account> accounts = new ArrayList<Account>();
-			accountRepository.findAll().forEach(accounts::add);
-			return new ResponseEntity<Object>(accounts, HttpStatus.OK);
+			if (validarToken(token)) {
+				List<Account> accounts = new ArrayList<Account>();
+				accountRepository.findAll().forEach(accounts::add);
+				return new ResponseEntity<Object>(accounts, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Object>(CHECK_TOKEN, HttpStatus.FORBIDDEN);
+			}			
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -103,7 +133,14 @@ public class AccountService implements IAccountService {
 				if (account.getPassword().equals(form.getPassword())) {
 					form.setPassword(null);
 					form.setProfile(account.getProfile());
-					//Falta token
+					AccountToken token = tokenRepository.findById(account.getId()).get();
+					TokenUtil util = new TokenUtil();
+					if (!util.validarFecha(token.getDateExpired())) {
+						token.setToken(util.generarToken());
+						token.setDateExpired(util.generarFecha());
+						tokenRepository.save(token);
+					}
+					form.setToken(token.getToken());
 					return new ResponseEntity<Object>(form, HttpStatus.OK);
 				} else {
 					return new ResponseEntity<Object>(PASS_INVALID, HttpStatus.FORBIDDEN);
@@ -111,6 +148,16 @@ public class AccountService implements IAccountService {
 			}			
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	private boolean validarToken(String token) {
+		try {
+			TokenUtil util = new TokenUtil();
+			AccountToken info = tokenRepository.findByToken(token);
+			return util.validarFecha(info.getDateExpired());
+		} catch (Exception e) {
+			return false;
 		}
 	}
 
