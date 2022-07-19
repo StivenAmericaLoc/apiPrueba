@@ -13,5 +13,11 @@ public interface IInstallationService {
 	ResponseEntity<Object> findById(String token, Integer id);
 	
 	ResponseEntity<Object> findAll(String token);
+	
+	ResponseEntity<Object> findAllByAccount(String token, int idAccount);
+	
+	void runTask(int idInstallation);
+	
+	ResponseEntity<Object> report(String token, String dateInit, String dateFin, int estados);
 
 }

@@ -26,28 +26,22 @@ public class DetailInstallation implements Serializable {
 	private Integer idDevice;
 
 	@Column
-	private Integer taskCoordenate;
+	private String task;
 
 	@Column
-	private Integer taskOff;
+	private Integer status;
 
 	@Column
-	private Integer taskOn;
+	private Long dateInit;
+	
+	@Column
+	private String description;
 
 	@Column
-	private Integer taskAccuary;
-
+	private Long dateFinish;
+	
 	@Column
-	private Integer taskPanicBoton;
-
-	@Column
-	private Integer taskOffRemote;
-
-	@Column
-	private String dateInit;
-
-	@Column
-	private String dateFinish;
+	private String deviceName;
 
 	public Integer getId() {
 		return id;
@@ -73,68 +67,53 @@ public class DetailInstallation implements Serializable {
 		this.idDevice = idDevice;
 	}
 
-	public Integer getTaskCoordenate() {
-		return taskCoordenate;
+	public String getTask() {
+		return task;
 	}
 
-	public void setTaskCoordenate(Integer taskCoordenate) {
-		this.taskCoordenate = taskCoordenate;
+	public void setTask(String task) {
+		this.task = task;
 	}
 
-	public Integer getTaskOff() {
-		return taskOff;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setTaskOff(Integer taskOff) {
-		this.taskOff = taskOff;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
-	public Integer getTaskOn() {
-		return taskOn;
-	}
-
-	public void setTaskOn(Integer taskOn) {
-		this.taskOn = taskOn;
-	}
-
-	public Integer getTaskAccuary() {
-		return taskAccuary;
-	}
-
-	public void setTaskAccuary(Integer taskAccuary) {
-		this.taskAccuary = taskAccuary;
-	}
-
-	public Integer getTaskPanicBoton() {
-		return taskPanicBoton;
-	}
-
-	public void setTaskPanicBoton(Integer taskPanicBoton) {
-		this.taskPanicBoton = taskPanicBoton;
-	}
-
-	public Integer getTaskOffRemote() {
-		return taskOffRemote;
-	}
-
-	public void setTaskOffRemote(Integer taskOffRemote) {
-		this.taskOffRemote = taskOffRemote;
-	}
-
-	public String getDateInit() {
+	public Long getDateInit() {
 		return dateInit;
 	}
 
-	public void setDateInit(String dateInit) {
+	public void setDateInit(Long dateInit) {
 		this.dateInit = dateInit;
 	}
 
-	public String getDateFinish() {
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getDateFinish() {
 		return dateFinish;
 	}
 
-	public void setDateFinish(String dateFinish) {
+	public void setDateFinish(Long dateFinish) {
 		this.dateFinish = dateFinish;
 	}
 
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	
 }

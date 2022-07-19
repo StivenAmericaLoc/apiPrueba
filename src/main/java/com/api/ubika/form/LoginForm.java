@@ -2,10 +2,19 @@ package com.api.ubika.form;
 
 public class LoginForm {
 
+	private int idUser;
 	private String user;
 	private String password;
 	private String token;
 	private String profile;
+
+	public int getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
+	}
 
 	public String getUser() {
 		return user;

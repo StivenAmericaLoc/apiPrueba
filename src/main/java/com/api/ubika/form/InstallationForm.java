@@ -11,6 +11,8 @@ public class InstallationForm {
 	private String dateInstallation;
 	private String dateFinish;
 	private List<DetailInstallationForm> details;
+	private Integer status;
+	private String nameAccount;
 	
 	public Integer getId() {
 		return id;
@@ -66,6 +68,22 @@ public class InstallationForm {
 
 	public void setDetails(List<DetailInstallationForm> details) {
 		this.details = details;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getNameAccount() {
+		return nameAccount;
+	}
+
+	public void setNameAccount(String nameAccount) {
+		this.nameAccount = nameAccount;
 	}
 
 }

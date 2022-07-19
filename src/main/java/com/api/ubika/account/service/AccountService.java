@@ -133,6 +133,7 @@ public class AccountService implements IAccountService {
 				if (account.getPassword().equals(form.getPassword())) {
 					form.setPassword(null);
 					form.setProfile(account.getProfile());
+					form.setIdUser(account.getId());
 					AccountToken token = tokenRepository.findById(account.getId()).get();
 					TokenUtil util = new TokenUtil();
 					if (!util.validarFecha(token.getDateExpired())) {
@@ -151,14 +152,30 @@ public class AccountService implements IAccountService {
 		}
 	}
 	
+	@Override
+	public ResponseEntity<Object> tokenValidation(String token) {
+		try {
+			if (validarToken(token)) {
+				return new ResponseEntity<Object>(HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Object>(CHECK_TOKEN, HttpStatus.FORBIDDEN);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	private boolean validarToken(String token) {
 		try {
 			TokenUtil util = new TokenUtil();
 			AccountToken info = tokenRepository.findByToken(token);
-			return util.validarFecha(info.getDateExpired());
+			boolean valido = util.validarFecha(info.getDateExpired());
+			return valido;
 		} catch (Exception e) {
 			return false;
 		}
 	}
+
+	
 
 }

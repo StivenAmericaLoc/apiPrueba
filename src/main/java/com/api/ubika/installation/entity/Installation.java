@@ -29,10 +29,19 @@ public class Installation implements Serializable {
 	private String address;
 
 	@Column
-	private String dateInstallation;
+	private Long dateInstallation;
 
 	@Column
-	private String dateFinish;
+	private Long dateFinish;
+	
+	@Column
+	private Integer status;
+	
+	@Column
+	private String addresGps;
+	
+	@Column
+	private String nameAccount;
 
 	public Integer getId() {
 		return id;
@@ -66,20 +75,44 @@ public class Installation implements Serializable {
 		this.address = address;
 	}
 
-	public String getDateInstallation() {
+	public Long getDateInstallation() {
 		return dateInstallation;
 	}
 
-	public void setDateInstallation(String dateInstallation) {
+	public void setDateInstallation(Long dateInstallation) {
 		this.dateInstallation = dateInstallation;
 	}
 
-	public String getDateFinish() {
+	public Long getDateFinish() {
 		return dateFinish;
 	}
 
-	public void setDateFinish(String dateFinish) {
+	public void setDateFinish(Long dateFinish) {
 		this.dateFinish = dateFinish;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getAddresGps() {
+		return addresGps;
+	}
+
+	public void setAddresGps(String addresGps) {
+		this.addresGps = addresGps;
+	}
+
+	public String getNameAccount() {
+		return nameAccount;
+	}
+
+	public void setNameAccount(String nameAccount) {
+		this.nameAccount = nameAccount;
 	}
 
 }

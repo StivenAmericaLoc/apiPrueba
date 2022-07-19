@@ -23,7 +23,8 @@ public class TokenUtil {
 		try {
 			Date fechaActual = new Date();
 			Date fechaComparar = FORMATO_FECHA.parse(fecha);
-			return fechaComparar.before(fechaActual);
+			boolean valida = fechaComparar.after(fechaActual);
+			return valida;
 		} catch (Exception e) {
 			return false;
 		}		

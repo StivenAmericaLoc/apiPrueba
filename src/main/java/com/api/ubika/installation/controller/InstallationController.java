@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.ubika.form.InstallationForm;
 import com.api.ubika.installation.service.IInstallationService;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/installation")
-@CrossOrigin(origins = "*")
 public class InstallationController {
 	
 	@Autowired
@@ -41,6 +42,21 @@ public class InstallationController {
 	@GetMapping("/all")
 	public ResponseEntity<Object> findAll(@RequestHeader("Authorization") String token) {
 		return installationService.findAll(token);
+	}
+	
+	@GetMapping("/all/{idUser}")
+	public ResponseEntity<Object> findAllByAccount(@RequestHeader("Authorization") String token, @PathVariable Integer idUser) {
+		return installationService.findAllByAccount(token, idUser);
+	}
+	
+	@PostMapping("/task/{idInstallation}")
+	public void runTask(@RequestHeader("Authorization") String token, @PathVariable Integer idInstallation) {
+		installationService.runTask(idInstallation);
+	}
+	
+	@GetMapping("/report")
+	public ResponseEntity<Object> findReport(@RequestHeader("Authorization") String token, @RequestParam String dateIni, @RequestParam String dateFin, @RequestParam int estado) {
+		return installationService.report(token, dateIni, dateFin, estado);
 	}
 
 }

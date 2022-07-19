@@ -33,6 +33,46 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>UBIKNOS_LIBS</groupId>
+			<artifactId>UBIKNOS_LIBS</artifactId>
+			<scope>system</scope>
+			<version>1.0</version>
+			<systemPath>${basedir}/libs/UBIKNOS_LIBS.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>AMERICALOC_BASIC_LIBS</groupId>
+			<artifactId>AMERICALOC_BASIC_LIBS</artifactId>
+			<scope>system</scope>
+			<version>1.0</version>
+			<systemPath>${basedir}/libs/AMERICALOC_BASIC_LIBS.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>mysql-connector-java-5.1.49-bin</groupId>
+			<artifactId>mysql-connector-java-5.1.49-bin</artifactId>
+			<scope>system</scope>
+			<version>5.1.49</version>
+			<systemPath>${basedir}/libs/mysql-connector-java-5.1.49-bin.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>httpclient-4.5.13</groupId>
+			<artifactId>httpclient-4.5.13</artifactId>
+			<scope>system</scope>
+			<version>4.5.13</version>
+			<systemPath>${basedir}/libs/httpclient-4.5.13.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>httpcore-4.4.13</groupId>
+			<artifactId>httpcore-4.4.13</artifactId>
+			<scope>system</scope>
+			<version>4.4.13</version>
+			<systemPath>${basedir}/libs/httpcore-4.4.13.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
@@ -41,6 +81,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 		</dependency>
 	</dependencies>
 

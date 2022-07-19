@@ -13,5 +13,10 @@ public interface IDetailInstallationService {
 	ResponseEntity<Object> save(String token, DetailInstallationForm form);
 	
 	ResponseEntity<Object> delete(String token, Integer id);
+	
+	ResponseEntity<Object> findByIdInstallation(String token, Integer idInstallation);
+	
+	ResponseEntity<Object> runTask(String token, Integer idDetail);
+	
 
 }

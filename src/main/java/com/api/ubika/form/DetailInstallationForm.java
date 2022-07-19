@@ -5,14 +5,12 @@ public class DetailInstallationForm {
 	private Integer id;
 	private Integer idInstallation;
 	private Integer idDevice;
-	private Integer taskCoordenate;
-	private Integer taskOff;
-	private Integer taskOn;
-	private Integer taskAccuary;
-	private Integer taskPanicBoton;
-	private Integer taskOffRemote;
+	private String task;
+	private Integer status;
 	private String dateInit;
+	private String description;
 	private String dateFinish;
+	private String deviceName;
 
 	public Integer getId() {
 		return id;
@@ -38,52 +36,20 @@ public class DetailInstallationForm {
 		this.idDevice = idDevice;
 	}
 
-	public Integer getTaskCoordenate() {
-		return taskCoordenate;
+	public String getTask() {
+		return task;
 	}
 
-	public void setTaskCoordenate(Integer taskCoordenate) {
-		this.taskCoordenate = taskCoordenate;
+	public void setTask(String task) {
+		this.task = task;
 	}
 
-	public Integer getTaskOff() {
-		return taskOff;
+	public Integer getStatus() {
+		return status;
 	}
 
-	public void setTaskOff(Integer taskOff) {
-		this.taskOff = taskOff;
-	}
-
-	public Integer getTaskOn() {
-		return taskOn;
-	}
-
-	public void setTaskOn(Integer taskOn) {
-		this.taskOn = taskOn;
-	}
-
-	public Integer getTaskAccuary() {
-		return taskAccuary;
-	}
-
-	public void setTaskAccuary(Integer taskAccuary) {
-		this.taskAccuary = taskAccuary;
-	}
-
-	public Integer getTaskPanicBoton() {
-		return taskPanicBoton;
-	}
-
-	public void setTaskPanicBoton(Integer taskPanicBoton) {
-		this.taskPanicBoton = taskPanicBoton;
-	}
-
-	public Integer getTaskOffRemote() {
-		return taskOffRemote;
-	}
-
-	public void setTaskOffRemote(Integer taskOffRemote) {
-		this.taskOffRemote = taskOffRemote;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public String getDateInit() {
@@ -94,12 +60,28 @@ public class DetailInstallationForm {
 		this.dateInit = dateInit;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getDateFinish() {
 		return dateFinish;
 	}
 
 	public void setDateFinish(String dateFinish) {
 		this.dateFinish = dateFinish;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 }

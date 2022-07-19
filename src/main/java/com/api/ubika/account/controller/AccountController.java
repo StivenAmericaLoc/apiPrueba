@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.ubika.account.service.IAccountService;
 import com.api.ubika.form.AccountForm;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/account")
-@CrossOrigin(origins = "*")
 public class AccountController {
 	
 	@Autowired

@@ -17,4 +17,6 @@ public interface IAccountService {
 	
 	ResponseEntity<Object> login(LoginForm form);
 	
+	ResponseEntity<Object> tokenValidation(String token);
+	
 }
